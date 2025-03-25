@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>럭키 카지노 - 바카라와 블랙잭 게임</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 로딩 화면 -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h2>럭키 카지노 로딩 중...</h2>
+    </div>
+
+    <!-- 해외 접속 차단 페이지 (기본적으로 숨겨져 있음) -->
+    <div id="blocked-access" class="hidden">
+        <div class="error-container">
+            <h1>404</h1>
+            <p>페이지를 찾을 수 없습니다.</p>
+        </div>
+    </div>
+
+    <!-- 헤더 영역 -->
+    <header>
+        <div class="logo">
+            <h1>럭키 카지노</h1>
+        </div>
+        <div class="user-info">
+            <div class="money-display">
+                <i class="fas fa-coins"></i>
+                <span id="money-amount">₩1,000,000</span>
+            </div>
+            <button id="save-btn" class="btn primary"><i class="fas fa-save"></i> 저장</button>
+            <button id="load-btn" class="btn secondary"><i class="fas fa-folder-open"></i> 불러오기</button>
+            <button id="settings-btn" class="btn"><i class="fas fa-cog"></i></button>
+        </div>
+    </header>
+
+    <!-- 메인 내비게이션 -->
+    <nav>
+        <ul>
+            <li class="active" data-game="baccarat"><i class="fas fa-cards"></i> 바카라</li>
+            <li data-game="blackjack"><i class="fas fa-cards"></i> 블랙잭</li>
+            <li data-game="coming-soon"><i class="fas fa-plus"></i> 추가 예정</li>
+        </ul>
+    </nav>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main>
+        <!-- 게임 선택 화면 -->
+        <section id="game-selection" class="hidden">
+            <div class="game-option" data-game="baccarat">
+                <h3>바카라</h3>
+                <p>클래식한 카지노 게임, 플레이어와 뱅커 중 누가 이길지 베팅하세요.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option" data-game="blackjack">
+                <h3>블랙잭</h3>
+                <p>21에 가까운 숫자를 만들어 딜러를 이기세요.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option coming-soon">
+                <h3>준비 중</h3>
+                <p>곧 새로운 게임이 추가될 예정입니다!</p>
+                <button class="btn disabled">준비 중</button>
+            </div>
+        </section>
+
+        <!-- 바카라 게임 화면 -->
+        <section id="baccarat-game">
+            <div class="game-info">
+                <div class="history">
+                    <h3>최근 결과</h3>
+                    <div class="history-dots" id="baccarat-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">플레이어 승:</span>
+                        <span class="value" id="player-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">뱅커 승:</span>
+                        <span class="value" id="banker-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">타이:</span>
+                        <span class="value" id="ties">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-table">
+                <div class="card-area player-area">
+                    <h3>플레이어</h3>
+                    <div class="cards" id="player-cards"></div>
+                    <div class="total" id="player-total">0</div>
+                </div>
+                <div class="card-area banker-area">
+                    <h3>뱅커</h3>
+                    <div class="cards" id="banker-cards"></div>
+                    <div class="total" id="banker-total">0</div>
+                </div>
+                <div class="result-display" id="result-display">
+                    <!-- 동적으로 결과가 표시됨 -->
+                </div>
+            </div>
+
+            <div class="betting-area">
+                <div class="bet-options">
+                    <div class="bet-option" data-bet="player">
+                        <h4>플레이어</h4>
+                        <div class="odds">x2.0</div>
+                        <div class="bet-amount" id="player-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="tie">
+                        <h4>타이</h4>
+                        <div class="odds">x8.0</div>
+                        <div class="bet-amount" id="tie-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="banker">
+                        <h4>뱅커</h4>
+                        <div class="odds">x1.95</div>
+                        <div class="bet-amount" id="banker-bet">₩0</div>
+                    </div>
+                </div>
+
+                <div class="chip-selection">
+                    <div class="chip" data-value="1000">₩1K</div>
+                    <div class="chip" data-value="5000">₩5K</div>
+                    <div class="chip" data-value="10000">₩10K</div>
+                    <div class="chip" data-value="50000">₩50K</div>
+                    <div class="chip" data-value="100000">₩100K</div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="clear-bet" class="btn secondary">베팅 취소</button>
+                    <button id="deal-btn" class="btn primary">딜</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 블랙잭 게임 화면 -->
+        <section id="blackjack-game" class="hidden">
+            <div class="game-info">
+                <div class="history">
+                    <h3>최근 결과</h3>
+                    <div class="history-icons" id="blackjack-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">승리:</span>
+                        <span class="value" id="bj-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">패배:</span>
+                        <span class="value" id="bj-losses">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">푸시:</span>
+                        <span class="value" id="bj-pushes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">블랙잭:</span>
+                        <span class="value" id="bj-blackjacks">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-table">
+                <div class="card-area dealer-area">
+                    <h3>딜러</h3>
+                    <div class="cards" id="dealer-cards"></div>
+                    <div class="total" id="dealer-total">0</div>
+                </div>
+                <div class="card-area player-area blackjack-player">
+                    <h3>플레이어</h3>
+                    <div class="cards" id="bj-player-cards"></div>
+                    <div class="total" id="bj-player-total">0</div>
+                </div>
+                <div class="result-display" id="bj-result-display">
+                    <!-- 동적으로 결과가 표시됨 -->
+                </div>
+            </div>
+
+            <div class="betting-area">
+                <div class="bet-options blackjack-bet">
+                    <div class="bet-option active" data-bet="blackjack">
+                        <h4>베팅 금액</h4>
+                        <div class="bet-amount" id="blackjack-bet">₩0</div>
+                    </div>
+                </div>
+
+                <div class="chip-selection">
+                    <div class="chip" data-value="1000">₩1K</div>
+                    <div class="chip" data-value="5000">₩5K</div>
+                    <div class="chip" data-value="10000">₩10K</div>
+                    <div class="chip" data-value="50000">₩50K</div>
+                    <div class="chip" data-value="100000">₩100K</div>
+                </div>
+
+                <div class="action-buttons blackjack-buttons">
+                    <button id="bj-clear-bet" class="btn secondary">베팅 취소</button>
+                    <button id="bj-deal-btn" class="btn primary">딜</button>
+                    <button id="hit-btn" class="btn game-btn hidden">히트</button>
+                    <button id="stand-btn" class="btn game-btn hidden">스탠드</button>
+                    <button id="double-btn" class="btn game-btn hidden">더블</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 모달 컨테이너 -->
+    <div id="modal-container" class="hidden">
+        <!-- 설정 모달 -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>설정</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="settings-group">
+                    <h3>소리 설정</h3>
+                    <div class="setting-item">
+                        <label for="sound-toggle">게임 소리</label>
+                        <label class="switch">
+                            <input type="checkbox" id="sound-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="music-toggle">배경 음악</label>
+                        <label class="switch">
+                            <input type="checkbox" id="music-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label for="volume-control">음량</label>
+                        <input type="range" id="volume-control" min="0" max="100" value="80">
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h3>자동 저장</h3>
+                    <div class="setting-item">
+                        <label for="autosave-toggle">10분마다 자동 저장</label>
+                        <label class="switch">
+                            <input type="checkbox" id="autosave-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn primary" id="save-settings">설정 저장</button>
+            </div>
+        </div>
+
+        <!-- 대출 모달 -->
+        <div id="loan-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>대출</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="loan-info">
+                    <h3>현재 대출 상태</h3>
+                    <div class="loan-status">
+                        <div class="loan-item">
+                            <span class="label">현재 대출금:</span>
+                            <span class="value" id="current-loan">₩0</span>
+                        </div>
+                        <div class="loan-item">
+                            <span class="label">이자율:</span>
+                            <span class="value">5%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="loan-request">
+                    <h3>대출 신청</h3>
+                    <div class="loan-options">
+                        <button class="loan-option" data-amount="100000">₩100,000</button>
+                        <button class="loan-option" data-amount="500000">₩500,000</button>
+                        <button class="loan-option" data-amount="1000000">₩1,000,000</button>
+                        <button class="loan-option" data-amount="5000000">₩5,000,000</button>
+                    </div>
+                    <div class="loan-custom">
+                        <label for="custom-loan">직접 입력:</label>
+                        <input type="number" id="custom-loan" min="10000" step="10000" placeholder="금액 입력...">
+                        <button id="apply-custom-loan" class="btn primary">신청</button>
+                    </div>
+                </div>
+                <div class="loan-repay">
+                    <h3>대출금 상환</h3>
+                    <div class="repay-options">
+                        <button id="repay-all" class="btn secondary">전액 상환</button>
+                        <div class="repay-custom">
+                            <label for="custom-repay">상환 금액:</label>
+                            <input type="number" id="custom-repay" min="10000" step="10000" placeholder="금액 입력...">
+                            <button id="apply-custom-repay" class="btn primary">상환</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 저장 모달 -->
+        <div id="save-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>게임 저장</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="save-slots">
+                    <h3>저장 슬롯 선택</h3>
+                    <div class="slots-container" id="save-slots-container">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
+                <div class="save-new">
+                    <h3>새 슬롯에 저장</h3>
+                    <div class="save-new-input">
+                        <label for="save-name">저장 이름:</label>
+                        <input type="text" id="save-name" placeholder="저장 이름 입력...">
+                        <button id="save-new-slot" class="btn primary">저장</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 불러오기 모달 -->
+        <div id="load-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>게임 불러오기</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="load-slots">
+                    <h3>저장된 게임</h3>
+                    <div class="slots-container" id="load-slots-container">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 컨테이너 -->
+    <div id="toast-container"></div>
+
+    <!-- 애니메이션 효과 컨테이너 -->
+    <div id="animation-container"></div>
+
+    <!-- 스크립트 -->
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/baccarat.js"></script>
+    <script src="js/blackjack.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
