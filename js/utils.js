@@ -563,77 +563,89 @@ function animateNumber(element, start, end, duration = 1000, formatter = null) {
 const SOUND_CACHE = {};
 
 // 소리 재생 함수
+/**
+ * 소리 재생 함수
+ * @param {string} soundName - 재생할 소리 이름
+ */
 function playSound(soundName) {
     if (!GAME_DATA.settings.sound) return;
     
-    // 볼륨 설정
-    const volume = GAME_DATA.settings.volume / 100;
-    
-    // 캐시된 소리가 있으면 재사용
-    if (SOUND_CACHE[soundName]) {
-        const sound = SOUND_CACHE[soundName];
+    try {
+        // 볼륨 설정
+        const volume = GAME_DATA.settings.volume / 100;
+        
+        // 소리 매핑 객체 - 존재하는 파일만 사용
+        const soundMap = {
+            'card_deal': 'card_deal',
+            'card_flip': 'card_flip',
+            'chip': 'chip',
+            'win': 'win',
+            'lose': 'lose',
+            'push': 'push',
+            'blackjack': 'blackjack',
+            'bet_select': 'bet_select',
+            'bet_clear': 'bet_clear',
+            'special_event': 'special_event',
+            'modal_open': 'modal_open',
+            'modal_close': 'modal_close',
+            
+            // 누락된 소리 대체
+            'money_gain': 'win',  // win 소리로 대체
+            'money_loss': 'lose',  // lose 소리로 대체
+            'save': 'win',  // win 소리로 대체
+            'load': 'special_event',  // special_event 소리로 대체
+            
+            // 새 게임 소리 대체
+            'spin': 'special_event',
+            'result': 'win',
+            'slot_spin': 'special_event',
+            'big_win': 'blackjack',
+            'check': 'card_flip',
+            'call': 'bet_select',
+            'raise': 'chip',
+            'fold': 'bet_clear',
+            'achievement': 'blackjack',
+            'purchase': 'chip',
+            'select': 'bet_select',
+            'theme_change': 'modal_open',
+            'menu_open': 'modal_open',
+            'menu_close': 'modal_close'
+        };
+        
+        // 매핑된 소리 파일 이름 가져오기
+        const mappedSound = soundMap[soundName] || soundName;
+        
+        // 캐시된 소리가 있으면 재사용
+        if (SOUND_CACHE[mappedSound]) {
+            const sound = SOUND_CACHE[mappedSound];
+            sound.volume = volume;
+            sound.currentTime = 0;
+            sound.play().catch(error => {
+                // 사용자 상호작용 필요 오류는 무시 (NotAllowedError)
+                if (error.name !== 'NotAllowedError') {
+                    console.error('소리 재생 오류:', error);
+                }
+            });
+            return;
+        }
+        
+        // 새 오디오 객체 생성
+        const sound = new Audio(`assets/sounds/${mappedSound}.mp3`);
         sound.volume = volume;
-        sound.currentTime = 0;
-        sound.play().catch(error => console.error('소리 재생 오류:', error));
-        return;
+        
+        // 캐시에 저장
+        SOUND_CACHE[mappedSound] = sound;
+        
+        // 재생
+        sound.play().catch(error => {
+            // 사용자 상호작용 필요 오류는 무시 (NotAllowedError)
+            if (error.name !== 'NotAllowedError') {
+                console.error('소리 재생 오류:', error);
+            }
+        });
+    } catch (error) {
+        console.error('소리 재생 시스템 오류:', error);
     }
-    
-    // 소리 매핑 객체 (기존 소리 파일 재사용)
-    const soundMap = {
-        'card_deal': 'card_deal',
-        'card_flip': 'card_flip',
-        'chip': 'chip',
-        'win': 'win',
-        'lose': 'lose',
-        'push': 'push',
-        'blackjack': 'blackjack',
-        'money_gain': 'money_gain',
-        'money_loss': 'money_loss',
-        'bet_select': 'bet_select',
-        'bet_clear': 'bet_clear',
-        'special_event': 'special_event',
-        'modal_open': 'modal_open',
-        'modal_close': 'modal_close',
-        'loan': 'loan',
-        'repay': 'repay',
-        
-        // 새로운 게임 소리 (기존 소리 재사용)
-        'spin': 'special_event',
-        'result': 'win',
-        'slot_spin': 'special_event',
-        'big_win': 'blackjack',
-        'check': 'card_flip',
-        'call': 'bet_select',
-        'raise': 'chip',
-        'fold': 'bet_clear',
-        
-        // 새로운 기능 소리
-        'achievement': 'blackjack',
-        'purchase': 'money_gain',
-        'select': 'bet_select',
-        'theme_change': 'modal_open',
-        'menu_open': 'modal_open',
-        'menu_close': 'modal_close',
-        
-        // 토스트 소리
-        'toast_success': 'win',
-        'toast_error': 'lose',
-        'toast_warning': 'bet_clear',
-        'toast_info': 'bet_select'
-    };
-    
-    // 매핑된 소리 파일 이름 가져오기
-    const mappedSound = soundMap[soundName] || soundName;
-    
-    // 사운드 요소가 없으면 생성
-    const sound = new Audio(`assets/sounds/${mappedSound}.mp3`);
-    sound.volume = volume;
-    
-    // 캐시에 저장
-    SOUND_CACHE[soundName] = sound;
-    
-    // 재생
-    sound.play().catch(error => console.error('소리 재생 오류:', error));
 }
 
 // 배경 음악 재생 함수
