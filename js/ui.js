@@ -252,7 +252,9 @@ function updateThemeBasedOnTime() {
     }
 }
 
-// 테마 설정
+/**
+ * 테마 설정
+ */
 function setTheme(theme) {
     currentTheme = theme;
     
@@ -275,12 +277,17 @@ function setTheme(theme) {
     document.body.className = `${theme}-theme`;
     
     // 효과음
-    playSound('theme_change');
+    //playSound('theme_change');
     
     // 저장
     if (GAME_DATA.settings) {
         GAME_DATA.settings.theme = theme;
-        onDataChange();
+        
+        // 이 부분이 문제 - onDataChange가 정의되지 않음
+        // 수정: onDataChange 직접 호출 대신 변경 내용만 저장
+        if (typeof saveGameData === 'function') {
+            saveGameData('autosave');
+        }
     }
 }
 
