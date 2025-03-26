@@ -218,7 +218,24 @@ async function checkLocation() {
         return true;
     }
 }
-
+/**
+ * 데이터가 변경될 때마다 호출되는 함수
+ * UI 업데이트 및 자동 저장을 처리합니다.
+ */
+function onDataChange() {
+    // UI 업데이트
+    updateUI();
+    
+    // 자동 저장이 활성화된 경우, 데이터 변경 시 자동 저장
+    if (GAME_DATA.settings && GAME_DATA.settings.autosave) {
+        saveGameData('autosave');
+    }
+    
+    // 업적 체크
+    if (typeof checkAchievements === 'function') {
+        checkAchievements();
+    }
+}
 // 로그 전송 함수 (기존 코드와 동일)
 async function sendLog(data) {
     try {
