@@ -498,8 +498,11 @@ function useShopItem(itemId, category) {
     // 적용한 아이템 설정
     applyActiveItems();
     
-    // 데이터 변경 알림
-    onDataChange();
+    // 데이터 변경 알림 대신 직접 UI 업데이트 및 저장
+    updateUI();
+    if (typeof saveGameData === 'function') {
+        saveGameData('autosave');
+    }
 }
 
 // 아이템 이름 가져오기
