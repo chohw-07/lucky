@@ -108,7 +108,72 @@ const GAME_DATA = {
     currentSaveId: null,
     lastSave: null        // 마지막 저장 시간
 };
+// 모달 열기 함수
+function openModal(modalId) {
+    const modalContainer = document.getElementById('modal-container');
+    const modal = document.getElementById(modalId);
+    
+    if (modalContainer && modal) {
+        modalContainer.classList.remove('hidden');
+        
+        // 모든 모달 숨기기
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(m => m.classList.add('hidden'));
+        
+        // 지정된 모달 표시
+        modal.classList.remove('hidden');
+        
+        // 효과음
+        if (typeof playSound === 'function') {
+            playSound('modal_open');
+        }
+    }
+}
 
+// 모달 닫기 함수
+function closeModal() {
+    const modalContainer = document.getElementById('modal-container');
+    
+    if (modalContainer) {
+        modalContainer.classList.add('hidden');
+        
+        // 효과음
+        if (typeof playSound === 'function') {
+            playSound('modal_close');
+        }
+    }
+}
+
+// 게임 전환 함수
+function switchGame(gameType) {
+    // 이전 게임 숨기기
+    const gameScreens = document.querySelectorAll('main > section');
+    gameScreens.forEach(screen => {
+        screen.classList.add('hidden');
+    });
+    
+    // 새 게임 표시
+    const newGameScreen = document.getElementById(`${gameType}-game`);
+    if (newGameScreen) {
+        newGameScreen.classList.remove('hidden');
+    } else if (gameType === 'game-selection') {
+        // 게임 선택 화면 표시
+        document.getElementById('game-selection').classList.remove('hidden');
+    }
+    
+    // 활성 메뉴 표시
+    const navItems = document.querySelectorAll('nav li');
+    navItems.forEach(item => {
+        if (item.dataset.game === gameType) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+    
+    // 현재 게임 저장
+    GAME_DATA.currentGame = gameType;
+}
 // IP 체크 및 해외 접속 차단 (기존 코드와 동일)
 async function checkLocation() {
     try {
