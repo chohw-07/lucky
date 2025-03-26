@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>럭키 카지노 - 업그레이드 버전</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <!-- 로딩 화면 -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h2>럭키 카지노 로딩 중...</h2>
+    </div>
+
+    <!-- 헤더 영역 -->
+    <header>
+        <div class="logo">
+            <h1>럭키 카지노</h1>
+        </div>
+        <div class="user-info">
+            <div class="money-display" id="open-wallet">
+                <span>💰</span>
+                <span id="money-amount">₩1,000,000</span>
+            </div>
+            <button id="save-btn" class="btn primary icon-only">💾</button>
+            <button id="load-btn" class="btn secondary icon-only">📂</button>
+            <button id="profile-btn" class="btn icon-only">👤</button>
+            <button id="rewards-btn" class="btn icon-only">🏆</button>
+            <button id="shop-btn" class="btn icon-only">🛒</button>
+            <button id="settings-btn" class="btn icon-only">⚙️</button>
+            <button class="mobile-menu-button">☰</button>
+        </div>
+    </header>
+
+    <!-- 메인 내비게이션 -->
+    <nav>
+        <ul>
+            <li class="active" data-game="baccarat">🃏 바카라</li>
+            <li data-game="blackjack">♠️ 블랙잭</li>
+            <li data-game="roulette">🎡 룰렛</li>
+            <li data-game="slots">🎰 슬롯머신</li>
+            <li data-game="poker">♦️ 포커</li>
+            <li data-game="game-selection">🏠 게임 로비</li>
+            <li data-game="coming-soon">🔜 준비 중</li>
+        </ul>
+    </nav>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <main>
+        <!-- 게임 선택 화면 -->
+        <section id="game-selection" class="hidden">
+            <div class="game-option popular" data-game="baccarat">
+                <div class="game-icon">🃏</div>
+                <h3>바카라</h3>
+                <p>클래식한 카지노 게임, 플레이어와 뱅커 중 누가 이길지 베팅하세요. 9에 가까운 쪽이 승리합니다.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option" data-game="blackjack">
+                <div class="game-icon">♠️</div>
+                <h3>블랙잭</h3>
+                <p>21에 가까운 숫자를 만들어 딜러를 이기세요. 21을 초과하면 버스트되어 손실됩니다.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option new" data-game="roulette">
+                <div class="game-icon">🎡</div>
+                <h3>룰렛</h3>
+                <p>회전하는 휠에서 볼이 어디에 멈출지 예측하고 베팅하세요. 다양한 베팅 옵션이 있습니다.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option new" data-game="slots">
+                <div class="game-icon">🎰</div>
+                <h3>슬롯머신</h3>
+                <p>레버를 당기고 3개의 릴에서 같은 심볼이 나오면 승리! 특별한 조합으로 잭팟을 노려보세요.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option new" data-game="poker">
+                <div class="game-icon">♦️</div>
+                <h3>포커</h3>
+                <p>5장의 카드로 가장 좋은 족보를 만드세요. 컴퓨터 딜러와 1:1로 대결합니다.</p>
+                <button class="btn primary">플레이</button>
+            </div>
+            <div class="game-option coming-soon" data-game="coming-soon">
+                <div class="game-icon">🎲</div>
+                <h3>주사위 게임</h3>
+                <p>다양한 주사위 게임들이 곧 추가될 예정입니다. 기대해 주세요!</p>
+                <button class="btn disabled">준비 중</button>
+            </div>
+        </section>
+
+        <!-- 바카라 게임 화면 -->
+        <section id="baccarat-game">
+            <div class="game-info">
+                <div class="history">
+                    <h3>🔄 최근 결과</h3>
+                    <div class="history-dots" id="baccarat-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">플레이어 승:</span>
+                        <span class="value" id="player-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">뱅커 승:</span>
+                        <span class="value" id="banker-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">타이:</span>
+                        <span class="value" id="ties">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-table">
+                <div class="card-area player-area">
+                    <h3>👤 플레이어</h3>
+                    <div class="cards" id="player-cards"></div>
+                    <div class="total" id="player-total">0</div>
+                </div>
+                <div class="card-area banker-area">
+                    <h3>🏦 뱅커</h3>
+                    <div class="cards" id="banker-cards"></div>
+                    <div class="total" id="banker-total">0</div>
+                </div>
+                <div class="result-display" id="result-display">
+                    <!-- 동적으로 결과가 표시됨 -->
+                </div>
+            </div>
+
+            <div class="betting-area">
+                <div class="bet-options">
+                    <div class="bet-option" data-bet="player">
+                        <h4>플레이어</h4>
+                        <div class="odds">x2.0</div>
+                        <div class="bet-amount" id="player-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="tie">
+                        <h4>타이</h4>
+                        <div class="odds">x8.0</div>
+                        <div class="bet-amount" id="tie-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="banker">
+                        <h4>뱅커</h4>
+                        <div class="odds">x1.95</div>
+                        <div class="bet-amount" id="banker-bet">₩0</div>
+                    </div>
+                </div>
+
+                <div class="chip-selection">
+                    <div class="chip" data-value="1000">₩1K</div>
+                    <div class="chip" data-value="5000">₩5K</div>
+                    <div class="chip" data-value="10000">₩10K</div>
+                    <div class="chip" data-value="50000">₩50K</div>
+                    <div class="chip" data-value="100000">₩100K</div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="clear-bet" class="btn secondary">베팅 취소</button>
+                    <button id="deal-btn" class="btn primary">딜</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 블랙잭 게임 화면 -->
+        <section id="blackjack-game" class="hidden">
+            <div class="game-info">
+                <div class="history">
+                    <h3>🔄 최근 결과</h3>
+                    <div class="history-icons" id="blackjack-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">승리:</span>
+                        <span class="value" id="bj-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">패배:</span>
+                        <span class="value" id="bj-losses">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">푸시:</span>
+                        <span class="value" id="bj-pushes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">블랙잭:</span>
+                        <span class="value" id="bj-blackjacks">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-table">
+                <div class="card-area dealer-area">
+                    <h3>🎩 딜러</h3>
+                    <div class="cards" id="dealer-cards"></div>
+                    <div class="total" id="dealer-total">0</div>
+                </div>
+                <div class="card-area player-area blackjack-player">
+                    <h3>👤 플레이어</h3>
+                    <div class="cards" id="bj-player-cards"></div>
+                    <div class="total" id="bj-player-total">0</div>
+                </div>
+                <div class="result-display" id="bj-result-display">
+                    <!-- 동적으로 결과가 표시됨 -->
+                </div>
+            </div>
+
+            <div class="betting-area">
+                <div class="bet-options blackjack-bet">
+                    <div class="bet-option active" data-bet="blackjack">
+                        <h4>베팅 금액</h4>
+                        <div class="bet-amount" id="blackjack-bet">₩0</div>
+                    </div>
+                </div>
+
+                <div class="chip-selection">
+                    <div class="chip" data-value="1000">₩1K</div>
+                    <div class="chip" data-value="5000">₩5K</div>
+                    <div class="chip" data-value="10000">₩10K</div>
+                    <div class="chip" data-value="50000">₩50K</div>
+                    <div class="chip" data-value="100000">₩100K</div>
+                </div>
+
+                <div class="action-buttons blackjack-buttons">
+                    <button id="bj-clear-bet" class="btn secondary">베팅 취소</button>
+                    <button id="bj-deal-btn" class="btn primary">딜</button>
+                    <button id="hit-btn" class="btn game-btn hidden">히트</button>
+                    <button id="stand-btn" class="btn game-btn hidden">스탠드</button>
+                    <button id="double-btn" class="btn game-btn hidden">더블</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 룰렛 게임 화면 -->
+        <section id="roulette-game" class="hidden">
+            <div class="game-info">
+                <div class="history">
+                    <h3>🔄 최근 결과</h3>
+                    <div class="history-dots" id="roulette-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">승리:</span>
+                        <span class="value" id="roulette-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">패배:</span>
+                        <span class="value" id="roulette-losses">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">최대 배당:</span>
+                        <span class="value" id="roulette-max-payout">x36</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-table">
+                <div class="roulette-wheel-container">
+                    <div class="roulette-wheel">
+                        <div class="roulette-indicator"></div>
+                        <div class="roulette-wheel-inner" id="roulette-wheel-inner">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                        <div class="roulette-ball" id="roulette-ball"></div>
+                    </div>
+                    <div class="roulette-result" id="roulette-result">
+                        <div class="roulette-prev-numbers" id="roulette-prev-numbers">
+                            <!-- 이전 번호들 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="roulette-board" id="roulette-board">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </div>
+
+            <div class="betting-area">
+                <div class="bet-options roulette-special-bets">
+                    <div class="bet-option" data-bet="red">
+                        <h4>레드</h4>
+                        <div class="odds">x2.0</div>
+                        <div class="bet-amount" id="red-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="black">
+                        <h4>블랙</h4>
+                        <div class="odds">x2.0</div>
+                        <div class="bet-amount" id="black-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="odd">
+                        <h4>홀수</h4>
+                        <div class="odds">x2.0</div>
+                        <div class="bet-amount" id="odd-bet">₩0</div>
+                    </div>
+                    <div class="bet-option" data-bet="even">
+                        <h4>짝수</h4>
+                        <div class="odds">x2.0</div>
+                        <div class="bet-amount" id="even-bet">₩0</div>
+                    </div>
+                </div>
+
+                <div class="chip-selection">
+                    <div class="chip" data-value="1000">₩1K</div>
+                    <div class="chip" data-value="5000">₩5K</div>
+                    <div class="chip" data-value="10000">₩10K</div>
+                    <div class="chip" data-value="50000">₩50K</div>
+                    <div class="chip" data-value="100000">₩100K</div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="roulette-clear-bet" class="btn secondary">베팅 취소</button>
+                    <button id="roulette-spin-btn" class="btn primary">스핀</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 슬롯머신 게임 화면 -->
+        <section id="slots-game" class="hidden">
+            <div class="game-info">
+                <div class="history">
+                    <h3>🔄 최근 결과</h3>
+                    <div class="history-icons" id="slots-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">승리:</span>
+                        <span class="value" id="slots-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">패배:</span>
+                        <span class="value" id="slots-losses">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">잭팟:</span>
+                        <span class="value" id="slots-jackpots">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slot-machine">
+                <div class="slot-machine-top">
+                    <div class="slot-machine-payouts">
+                        <div>🍒🍒🍒 = x3</div>
+                        <div>🍋🍋🍋 = x5</div>
+                        <div>🍇🍇🍇 = x10</div>
+                        <div>🔔🔔🔔 = x20</div>
+                        <div>💎💎💎 = x50</div>
+                        <div>🎰🎰🎰 = x100</div>
+                    </div>
+                    <div class="slot-machine-display">
+                        <div class="label">현재 배팅</div>
+                        <div class="value" id="slots-current-bet">₩1,000</div>
+                    </div>
+                    <div class="slot-machine-display">
+                        <div class="label">마지막 당첨</div>
+                        <div class="value" id="slots-last-win">₩0</div>
+                    </div>
+                </div>
+
+                <div class="slot-reels-container">
+                    <div class="slot-reel" id="slot-reel-1">
+                        <div class="slot-reel-inner" id="slot-reel-inner-1">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+                    <div class="slot-reel" id="slot-reel-2">
+                        <div class="slot-reel-inner" id="slot-reel-inner-2">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+                    <div class="slot-reel" id="slot-reel-3">
+                        <div class="slot-reel-inner" id="slot-reel-inner-3">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slot-machine-controls">
+                    <div class="bet-controls">
+                        <button class="bet-control-button" id="decrease-bet">-</button>
+                        <div class="bet-amount" id="bet-amount">₩1,000</div>
+                        <button class="bet-control-button" id="increase-bet">+</button>
+                    </div>
+                    <button class="spin-button" id="spin-button">스핀!</button>
+                    <button class="btn secondary" id="auto-spin">자동 스핀</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 포커 게임 화면 -->
+        <section id="poker-game" class="hidden">
+            <div class="game-info">
+                <div class="history">
+                    <h3>🔄 최근 결과</h3>
+                    <div class="history-icons" id="poker-history">
+                        <!-- 동적으로 추가됨 -->
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="label">승리:</span>
+                        <span class="value" id="poker-wins">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">패배:</span>
+                        <span class="value" id="poker-losses">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">인당 획득:</span>
+                        <span class="value" id="poker-max-win">₩0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="poker-table">
+                <div class="poker-opponent">
+                    <div class="poker-opponent-info">
+                        <div class="poker-opponent-avatar">🤖</div>
+                        <div class="poker-opponent-details">
+                            <div class="poker-opponent-name">딜러</div>
+                            <div class="poker-opponent-status" id="dealer-status">대기 중...</div>
+                        </div>
+                    </div>
+                    <div class="cards" id="dealer-poker-cards">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                    <div class="poker-hand-name" id="dealer-hand-name"></div>
+                </div>
+
+                <div class="poker-community-cards" id="community-cards">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+
+                <div class="poker-pot">
+                    <div class="poker-pot-label">팟</div>
+                    <div class="poker-pot-amount" id="poker-pot">₩0</div>
+                </div>
+
+                <div class="poker-player">
+                    <div class="cards" id="player-poker-cards">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                    <div class="poker-hand-name" id="player-hand-name"></div>
+                </div>
+            </div>
+
+            <div class="betting-area">
+                <div class="bet-options poker-bet">
+                    <div class="bet-option active" data-bet="poker">
+                        <h4>베팅 금액</h4>
+                        <div class="bet-amount" id="poker-bet">₩0</div>
+                    </div>
+                </div>
+
+                <div class="chip-selection">
+                    <div class="chip" data-value="1000">₩1K</div>
+                    <div class="chip" data-value="5000">₩5K</div>
+                    <div class="chip" data-value="10000">₩10K</div>
+                    <div class="chip" data-value="50000">₩50K</div>
+                    <div class="chip" data-value="100000">₩100K</div>
+                </div>
+
+                <div class="poker-actions" id="poker-actions">
+                    <div class="poker-action-button fold" id="fold-btn">폴드</div>
+                    <div class="poker-action-button check" id="check-btn">체크</div>
+                    <div class="poker-action-button call" id="call-btn">콜</div>
+                    <div class="poker-action-button raise" id="raise-btn">레이즈</div>
+                    <div class="poker-action-button" id="deal-poker-btn">딜</div>
+                </div>
+
+                <div class="poker-raise-controls" id="poker-raise-controls">
+                    <input type="range" min="1000" max="100000" step="1000" class="poker-raise-slider" id="raise-slider">
+                    <div class="bet-amount" id="raise-amount">₩1,000</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 모달 컨테이너 -->
+    <div id="modal-container" class="hidden">
+        <!-- 설정 모달 -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>⚙️ 설정</h2>
+                <button class="close-modal">✖️</button>
+            </div>
+            <div class="modal-content">
+                <div class="settings-group">
+                    <h3>🔊 소리 설정</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div>게임 소리</div>
+                            <div class="setting-item-description">카드, 칩, 승리 등의 게임 효과음</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="sound-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div>배경 음악</div>
+                            <div class="setting-item-description">게임 중 배경 음악 재생</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="music-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div>음량</div>
+                            <div class="setting-item-description">게임 전체 음량 조절</div>
+                        </div>
+                        <input type="range" id="volume-control" min="0" max="100" value="80">
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h3>🎨 테마 설정</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div>테마 모드</div>
+                            <div class="setting-item-description">다크/라이트 모드 전환</div>
+                        </div>
+                        <label class="theme-toggle">
+                            <input type="checkbox" id="theme-toggle">
+                            <span class="theme-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div>테마 선택</div>
+                    </div>
+                    <div class="theme-options">
+                        <div class="theme-option theme-option-dark active" data-theme="dark">
+                            <div class="theme-option-content">
+                                <div class="theme-option-header"></div>
+                                <div class="theme-option-text"></div>
+                                <div class="theme-option-text"></div>
+                            </div>
+                            <div class="theme-name">다크</div>
+                        </div>
+                        <div class="theme-option theme-option-light" data-theme="light">
+                            <div class="theme-option-content">
+                                <div class="theme-option-header"></div>
+                                <div class="theme-option-text"></div>
+                                <div class="theme-option-text"></div>
+                            </div>
+                            <div class="theme-name">라이트</div>
+                        </div>
+                        <div class="theme-option theme-option-classic" data-theme="classic">
+                            <div class="theme-option-content">
+                                <div class="theme-option-header"></div>
+                                <div class="theme-option-text"></div>
+                                <div class="theme-option-text"></div>
+                            </div>
+                            <div class="theme-name">클래식</div>
+                        </div>
+                        <div class="theme-option theme-option-neon" data-theme="neon">
+                            <div class="theme-option-content">
+                                <div class="theme-option-header"></div>
+                                <div class="theme-option-text"></div>
+                                <div class="theme-option-text"></div>
+                            </div>
+                            <div class="theme-name">네온</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h3>🕹️ 게임 설정</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div>자동 저장</div>
+                            <div class="setting-item-description">10분마다 게임 데이터 자동 저장</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autosave-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div>애니메이션 효과</div>
+                            <div class="setting-item-description">게임 애니메이션 켜기/끄기</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="animation-toggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <div>딜 속도</div>
+                            <div class="setting-item-description">카드 딜 애니메이션 속도</div>
+                        </div>
+                        <input type="range" id="deal-speed-control" min="1" max="5" value="3">
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h3>📊 데이터 관리</h3>
+                    <div class="setting-item">
+                        <div>
+                            <div>모든 데이터 초기화</div>
+                            <div class="setting-item-description">모든 게임 데이터를 초기 상태로 되돌립니다</div>
+                        </div>
+                        <button class="btn error" id="reset-data-btn">초기화</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary" id="settings-cancel">취소</button>
+                <button class="btn primary" id="save-settings">설정 저장</button>
+            </div>
+        </div>
+
+        <!-- 프로필 모달 -->
+        <div id="profile-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>👤 내 프로필</h2>
+                <button class="close-modal">✖️</button>
+            </div>
+            <div class="modal-content">
+                <div class="profile-avatar-section">
+                    <div class="avatar-preview" id="avatar-preview">
+                        😎
+                    </div>
+                    <div class="avatar-options">
+                        <div class="avatar-option active" data-avatar="😎">😎</div>
+                        <div class="avatar-option" data-avatar="🤠">🤠</div>
+                        <div class="avatar-option" data-avatar="🧐">🧐</div>
+                        <div class="avatar-option" data-avatar="😊">😊</div>
+                        <div class="avatar-option" data-avatar="🥸">🥸</div>
+                        <div class="avatar-option" data-avatar="🥳">🥳</div>
+                        <div class="avatar-option" data-avatar="😏">😏</div>
+                        <div class="avatar-option" data-avatar="🤑">🤑</div>
+                    </div>
+                </div>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="player-name">닉네임</label>
+                        <input type="text" id="player-name" class="form-control" placeholder="닉네임을 입력하세요" maxlength="12">
+                    </div>
+                    <div class="form-group">
+                        <label>게임 통계</label>
+                        <div class="stats-charts">
+                            <div class="stats-chart">
+                                <div class="stats-chart-title">💰 수익 현황</div>
+                                <div class="chart-container" id="profit-chart">
+                                    <!-- 차트가 들어갈 자리 -->
+                                </div>
+                            </div>
+                            <div class="stats-chart">
+                                <div class="stats-chart-title">🎮 게임별 승률</div>
+                                <div class="chart-container" id="winrate-chart">
+                                    <!-- 차트가 들어갈 자리 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary" id="profile-cancel">취소</button>
+                <button class="btn primary" id="save-profile">저장</button>
+            </div>
+        </div>
+
+        <!-- 업적 모달 -->
+        <div id="achievements-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>🏆 업적</h2>
+                <button class="close-modal">✖️</button>
+            </div>
+            <div class="modal-content">
+                <div class="achievements-container" id="achievements-container">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn primary" id="close-achievements">닫기</button>
+            </div>
+        </div>
+
+        <!-- 상점 모달 -->
+        <div id="shop-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>🛒 상점</h2>
+                <button class="close-modal">✖️</button>
+            </div>
+            <div class="modal-content">
+                <div class="shop-tabs">
+                    <button class="shop-tab active" data-tab="avatars">아바타</button>
+                    <button class="shop-tab" data-tab="tables">테이블 테마</button>
+                    <button class="shop-tab" data-tab="cards">카드 스타일</button>
+                    <button class="shop-tab" data-tab="effects">특수 효과</button>
+                </div>
+                <div class="shop-container" id="shop-container">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn primary" id="close-shop">닫기</button>
+            </div>
+        </div>
+
+        <!-- 저장 모달 -->
+        <div id="save-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>💾 게임 저장</h2>
+                <button class="close-modal">✖️</button>
+            </div>
+            <div class="modal-content">
+                <div class="save-slots">
+                    <h3>저장 슬롯 선택</h3>
+                    <div class="slots-container" id="save-slots-container">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
+                <div class="save-new">
+                    <h3>새 슬롯에 저장</h3>
+                    <div class="save-new-input">
+                        <label for="save-name">저장 이름:</label>
+                        <input type="text" id="save-name" class="form-control" placeholder="저장 이름 입력...">
+                        <button id="save-new-slot" class="btn primary">저장</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 불러오기 모달 -->
+        <div id="load-modal" class="modal hidden">
+            <div class="modal-header">
+                <h2>📂 게임 불러오기</h2>
+                <button class="close-modal">✖️</button>
+            </div>
+            <div class="modal-content">
+                <div class="load-slots">
+                    <h3>저장된 게임</h3>
+                    <div class="slots-container" id="load-slots-container">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 컨테이너 -->
+    <div id="toast-container"></div>
+
+    <!-- 애니메이션 효과 컨테이너 -->
+    <div id="animation-container"></div>
+
+    <!-- 푸터 -->
+    <footer>
+        <div>© 2025 럭키 카지노 | 이용 약관 | 개인정보 처리방침 | 모든 게임은 실제 베팅없이 즐기는 카지노 게임입니다.</div>
+    </footer>
+
+    <!-- 스크립트 -->
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/baccarat.js"></script>
+    <script src="js/blackjack.js"></script>
+    <script src="js/roulette.js"></script>
+    <script src="js/slots.js"></script>
+    <script src="js/poker.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
