@@ -439,8 +439,37 @@ function setupLazyLoading() {
 }
 
 // 게임 전환 시 레이지 로딩 실행
-const originalSwitchGame = window.switchGame;
-window.switchGame = function(gameType) {
-    originalSwitchGame(gameType);
-    setupLazyLoading();
-};
+if (typeof window.switchGame === 'function') {
+    const originalSwitchGame = window.switchGame;
+    window.switchGame = function(gameType) {
+        originalSwitchGame(gameType);
+        if (typeof setupLazyLoading === 'function') {
+            setupLazyLoading();
+        }
+    };
+} else {
+    window.switchGame = function(gameType) {
+        // 기본 게임 전환 로직
+        const gameScreens = document.querySelectorAll('main > section');
+        gameScreens.forEach(screen => {
+            screen.classList.add('hidden');
+        });
+        
+        const newGameScreen = document.getElementById(`${gameType}-game`);
+        if (newGameScreen) {
+            newGameScreen.classList.remove('hidden');
+        } else if (gameType === 'game-selection') {
+            document.getElementById('game-selection').classList.remove('hidden');
+        }
+        
+        // GAME_DATA 업데이트
+        if (typeof GAME_DATA !== 'undefined') {
+            GAME_DATA.currentGame = gameType;
+        }
+        
+        // 추가 기능 실행
+        if (typeof setupLazyLoading === 'function') {
+            setupLazyLoading();
+        }
+    };
+}
