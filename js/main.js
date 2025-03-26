@@ -287,6 +287,9 @@ function resetAllData() {
 }
 
 // 설정 저장
+/**
+ * 게임 설정을 저장하는 함수
+ */
 function saveSettings() {
     // 설정 값 가져오기
     GAME_DATA.settings.sound = document.getElementById('sound-toggle').checked;
@@ -316,10 +319,8 @@ function saveSettings() {
     const dealSpeed = 0.6 - (GAME_DATA.settings.dealSpeed - 1) * 0.1; // 1(빠름)~5(느림)
     document.documentElement.style.setProperty('--transition-speed', `${dealSpeed}s`);
     
-    // 자동 저장 반영
-    if (GAME_DATA.settings.autosave) {
-        setupAutoSave();
-    }
+    // 자동 저장 설정
+    setupAutoSave();
     
     // 저장
     saveGameData('autosave');
@@ -329,8 +330,10 @@ function saveSettings() {
     
     // 알림 표시
     showToast('설정이 저장되었습니다.', 'success');
+    
+    // 데이터 변경 알림
+    onDataChange();
 }
-
 // 오디오 컨텍스트 초기화
 function initAudioContext() {
     // 사용자 인터랙션 필요 (iOS Safari 등에서 필요)
