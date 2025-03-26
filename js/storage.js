@@ -97,7 +97,7 @@ function saveGameData(saveName = null) {
         GAME_DATA.currentSaveId = saveId;
         
         // 현재 게임 데이터를 복사
-        const dataToSave = deepCopy(GAME_DATA);
+        const dataToSave = JSON.parse(JSON.stringify(GAME_DATA));
         
         // 마지막 저장 시간 업데이트
         dataToSave.lastSave = new Date().toISOString();
@@ -117,32 +117,27 @@ function saveGameData(saveName = null) {
                     totalGames: dataToSave.player.stats.blackjack.totalGames
                 },
                 roulette: {
-                    totalGames: dataToSave.player.stats.roulette.totalGames
+                    totalGames: dataToSave.player.stats.roulette ? 
+                        dataToSave.player.stats.roulette.totalGames : 0
                 },
                 slots: {
-                    totalGames: dataToSave.player.stats.slots.totalGames
+                    totalGames: dataToSave.player.stats.slots ? 
+                        dataToSave.player.stats.slots.totalGames : 0
                 },
                 poker: {
-                    totalGames: dataToSave.player.stats.poker.totalGames
+                    totalGames: dataToSave.player.stats.poker ? 
+                        dataToSave.player.stats.poker.totalGames : 0
                 }
             },
-            avatar: dataToSave.profile.avatar,
-            theme: dataToSave.settings.theme
+            avatar: dataToSave.profile ? dataToSave.profile.avatar : '😎',
+            theme: dataToSave.settings ? dataToSave.settings.theme : 'dark'
         };
         
         // 데이터를 JSON으로 변환
         const jsonData = JSON.stringify(dataToSave);
         
-        // 압축 저장 (용량 절약)
-        try {
-            // LZ 압축 시도
-            const compressedData = LZString.compressToUTF16(jsonData);
-            localStorage.setItem(`luckyCasino_saveData_${saveId}`, compressedData);
-        } catch (compressionError) {
-            // 압축 실패 시 일반 저장
-            console.warn('압축 저장 실패, 일반 저장 진행:', compressionError);
-            localStorage.setItem(`luckyCasino_saveData_${saveId}`, jsonData);
-        }
+        // 로컬 스토리지에 저장
+        localStorage.setItem(`luckyCasino_saveData_${saveId}`, jsonData);
         
         // 저장 목록 업데이트
         updateSavedGamesList(saveMetadata);
@@ -150,15 +145,14 @@ function saveGameData(saveName = null) {
         // 저장 모달 업데이트
         updateSaveModal();
         
-        // 다운로드 파일로 제공
-        if (saveName !== 'autosave') {
-            downloadSaveFile(saveId, saveName);
-        }
-        
         // 효과음
         playSound('save');
         
-        showToast('게임이 성공적으로 저장되었습니다.', 'success');
+        // 알림 표시
+        if (saveName !== 'autosave') {
+            showToast('게임이 성공적으로 저장되었습니다.', 'success');
+        }
+        
         return true;
     } catch (error) {
         console.error('게임 저장 오류:', error);
