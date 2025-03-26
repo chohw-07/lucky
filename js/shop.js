@@ -176,6 +176,9 @@ function updateShopUI(category) {
 }
 
 // 상점 아이템 구매
+/**
+ * 상점 아이템 구매
+ */
 function buyShopItem(itemId, price, category) {
     // 돈 확인
     if (GAME_DATA.player.money < price) {
@@ -205,8 +208,11 @@ function buyShopItem(itemId, price, category) {
     // 구매한 아이템 적용
     applyActiveItems();
     
-    // 데이터 변경 알림
-    onDataChange();
+    // 데이터 변경 알림 대신 직접 UI 업데이트 및 저장
+    updateUI();
+    if (typeof saveGameData === 'function') {
+        saveGameData('autosave');
+    }
 }
 
 // 상점 아이템 적용
