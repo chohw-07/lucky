@@ -89,6 +89,9 @@ function updateProfileUI() {
 }
 
 // 프로필 저장
+/**
+ * 프로필 저장
+ */
 function saveProfile() {
     // 이름 가져오기
     const nameInput = document.getElementById('player-name');
@@ -111,8 +114,11 @@ function saveProfile() {
     // 모달 닫기
     closeModal();
     
-    // 데이터 변경 알림
-    onDataChange();
+    // 데이터 변경 알림 대신 직접 UI 업데이트 및 저장
+    updateUI();
+    if (typeof saveGameData === 'function') {
+        saveGameData('autosave');
+    }
 }
 
 // 헤더에 프로필 정보 표시
