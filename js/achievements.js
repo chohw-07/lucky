@@ -292,7 +292,7 @@ function updateAchievementStats(gameType, result) {
  */
  
 // 상점 아이템 데이터
-const SHOP_ITEMS = {
+/*const SHOP_ITEMS = {
     avatars: [
         { id: 'avatar_cool', icon: '😎', name: '멋쟁이', price: 5000, description: '멋진 표정의 아바타입니다.' },
         { id: 'avatar_cowboy', icon: '🤠', name: '카우보이', price: 10000, description: '서부 스타일의 카우보이 아바타입니다.' },
@@ -321,7 +321,7 @@ const SHOP_ITEMS = {
         { id: 'effect_premium', name: '프리미엄 효과', price: 60000, description: '다양한 프리미엄 애니메이션 효과입니다.' },
         { id: 'effect_luxury', name: '럭셔리 효과', price: 120000, description: '최고급 럭셔리 애니메이션 효과입니다.' }
     ]
-};
+};*/
 
 // 상점 시스템 초기화
 function initShop() {
