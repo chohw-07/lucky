@@ -26,7 +26,131 @@ function initUI() {
     // 모바일 터치 이벤트 최적화
     setupTouchEvents();
 }
-
+/**
+ * UI 업데이트 함수
+ * 게임 데이터 변경 시 UI를 업데이트합니다.
+ */
+function updateUI() {
+    try {
+        // 머니 디스플레이 업데이트
+        const moneyElement = document.getElementById('money-amount');
+        if (moneyElement) {
+            moneyElement.textContent = formatCurrency(GAME_DATA.player.money);
+        }
+        
+        // 바카라 통계 업데이트
+        const playerWinsElement = document.getElementById('player-wins');
+        const bankerWinsElement = document.getElementById('banker-wins');
+        const tiesElement = document.getElementById('ties');
+        
+        if (playerWinsElement) playerWinsElement.textContent = GAME_DATA.player.stats.baccarat.playerWins;
+        if (bankerWinsElement) bankerWinsElement.textContent = GAME_DATA.player.stats.baccarat.bankerWins;
+        if (tiesElement) tiesElement.textContent = GAME_DATA.player.stats.baccarat.ties;
+        
+        // 블랙잭 통계 업데이트
+        const bjWinsElement = document.getElementById('bj-wins');
+        const bjLossesElement = document.getElementById('bj-losses');
+        const bjPushesElement = document.getElementById('bj-pushes');
+        const bjBlackjacksElement = document.getElementById('bj-blackjacks');
+        
+        if (bjWinsElement) bjWinsElement.textContent = GAME_DATA.player.stats.blackjack.wins;
+        if (bjLossesElement) bjLossesElement.textContent = GAME_DATA.player.stats.blackjack.losses;
+        if (bjPushesElement) bjPushesElement.textContent = GAME_DATA.player.stats.blackjack.pushes;
+        if (bjBlackjacksElement) bjBlackjacksElement.textContent = GAME_DATA.player.stats.blackjack.blackjacks;
+        
+        // 룰렛 통계 업데이트
+        const rouletteWinsElement = document.getElementById('roulette-wins');
+        const rouletteLossesElement = document.getElementById('roulette-losses');
+        
+        if (rouletteWinsElement) rouletteWinsElement.textContent = GAME_DATA.player.stats.roulette.wins;
+        if (rouletteLossesElement) rouletteLossesElement.textContent = GAME_DATA.player.stats.roulette.losses;
+        
+        // 슬롯 통계 업데이트
+        const slotsWinsElement = document.getElementById('slots-wins');
+        const slotsLossesElement = document.getElementById('slots-losses');
+        const slotsJackpotsElement = document.getElementById('slots-jackpots');
+        
+        if (slotsWinsElement) slotsWinsElement.textContent = GAME_DATA.player.stats.slots.wins;
+        if (slotsLossesElement) slotsLossesElement.textContent = GAME_DATA.player.stats.slots.losses;
+        if (slotsJackpotsElement) slotsJackpotsElement.textContent = GAME_DATA.player.stats.slots.jackpots;
+        
+        // 포커 통계 업데이트
+        const pokerWinsElement = document.getElementById('poker-wins');
+        const pokerLossesElement = document.getElementById('poker-losses');
+        
+        if (pokerWinsElement) pokerWinsElement.textContent = GAME_DATA.player.stats.poker.wins;
+        if (pokerLossesElement) pokerLossesElement.textContent = GAME_DATA.player.stats.poker.losses;
+        
+        // 프로필 정보 업데이트
+        const profileNameElement = document.getElementById('player-name');
+        const avatarPreviewElement = document.getElementById('avatar-preview');
+        
+        if (profileNameElement && GAME_DATA.profile) {
+            profileNameElement.value = GAME_DATA.profile.name;
+        }
+        
+        if (avatarPreviewElement && GAME_DATA.profile) {
+            avatarPreviewElement.textContent = GAME_DATA.profile.avatar;
+        }
+        
+        // 설정 업데이트
+        const soundToggle = document.getElementById('sound-toggle');
+        const musicToggle = document.getElementById('music-toggle');
+        const volumeControl = document.getElementById('volume-control');
+        const autosaveToggle = document.getElementById('autosave-toggle');
+        const animationToggle = document.getElementById('animation-toggle');
+        const dealSpeedControl = document.getElementById('deal-speed-control');
+        
+        if (soundToggle && GAME_DATA.settings) {
+            soundToggle.checked = GAME_DATA.settings.sound;
+        }
+        
+        if (musicToggle && GAME_DATA.settings) {
+            musicToggle.checked = GAME_DATA.settings.music;
+        }
+        
+        if (volumeControl && GAME_DATA.settings) {
+            volumeControl.value = GAME_DATA.settings.volume;
+        }
+        
+        if (autosaveToggle && GAME_DATA.settings) {
+            autosaveToggle.checked = GAME_DATA.settings.autosave;
+        }
+        
+        if (animationToggle && GAME_DATA.settings) {
+            animationToggle.checked = GAME_DATA.settings.animation;
+        }
+        
+        if (dealSpeedControl && GAME_DATA.settings) {
+            dealSpeedControl.value = GAME_DATA.settings.dealSpeed;
+        }
+        
+        // 테마 옵션 업데이트
+        const themeOptions = document.querySelectorAll('.theme-option');
+        if (themeOptions.length > 0 && GAME_DATA.settings) {
+            themeOptions.forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.theme === GAME_DATA.settings.theme) {
+                    option.classList.add('active');
+                }
+            });
+        }
+        
+        // 현재 게임 활성화
+        const navItems = document.querySelectorAll('nav li');
+        navItems.forEach(item => {
+            if (item.dataset.game === GAME_DATA.currentGame) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+        
+        console.log('UI가 성공적으로 업데이트되었습니다.');
+    } catch (error) {
+        console.error('UI 업데이트 중 오류 발생:', error);
+    }
+}
 // 모달 컨트롤 설정
 function setupModalControls() {
     // 모달 닫기 버튼 이벤트 설정
